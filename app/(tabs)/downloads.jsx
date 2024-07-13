@@ -1,9 +1,12 @@
+import { View, Text } from 'react-native'
 import React from 'react'
 
-function Download() {
+const Downloads = () => {
   return (
-    <div>Download</div>
+    <View>
+      <Text>Downloads</Text>
+    </View>
   )
 }
 
-export default Download
+export default Downloads

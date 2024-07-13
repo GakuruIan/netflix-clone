@@ -34,17 +34,19 @@ const Banner = ({image,title,tags}) => {
                  {/* tags */}
 
                  {/* buttons */}
-                  <View className="flex-row">
-                    <Button classes={'flex  items-center flex-row bg-white w-32 px-2 mt-2 py-1.5 rounded-sm mr-4'}>
-                      <PlayIcon color='#222' scale={0.8}/>
-                      <Text className='ml-2 font-text-light text-xl font-semibold'>Play</Text>
-                    </Button>
+                 <View className="flex-row">
+                  <Button classes={'flex  items-center flex-row bg-white w-32 px-2 mt-2 py-1.5 rounded-sm mr-4'}>
+                    <PlayIcon color='#222' scale={0.8}/>
+                    <Text className='ml-2 font-text-light text-xl font-semibold'>Play</Text>
+                  </Button>
 
-                    <Button classes={'flex  items-center flex-row bg-white/40 w-32 px-2 mt-2 py-1.5 rounded-sm'}>
-                      <BookmarkIcon color='#fff' scale={0.8}/>
-                      <Text className='ml-2 font-text-light text-white text-xl font-semibold'>Save</Text>
-                    </Button>
-                  </View>
+                  <Button classes={'flex  items-center flex-row bg-white/40 w-32 px-2 mt-2 py-1.5 rounded-sm'}>
+                    <BookmarkIcon color='#fff' scale={0.8}/>
+                    <Text className='ml-2 font-text-light text-white text-xl font-semibold'>Save</Text>
+                  </Button>
+                </View>
+                 
+                  
                  {/* buttons */}
               </View>
             </LinearGradient>
