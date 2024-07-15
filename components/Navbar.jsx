@@ -15,7 +15,7 @@ const Navbar = ({scrollY}) => {
             {
               translateY: scrollY.interpolate({
                 inputRange: [0, 50, 100],
-                outputRange: [0, 0, -50],
+                outputRange: [0, 0, -10],
                 extrapolate: "clamp",
               }),
             },

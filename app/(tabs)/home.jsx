@@ -1,4 +1,4 @@
-import { View, Text,ScrollView,Image,Animated } from 'react-native'
+import { Animated } from 'react-native'
 import React,{useRef} from 'react'
 
 import { SafeAreaView } from 'react-native-safe-area-context'
