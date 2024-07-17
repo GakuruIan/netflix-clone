@@ -13,7 +13,9 @@ import Profile from '../screens/Profile'
 
 const Index = () => {
   return (
+  
     <SafeAreaView className='bg-primary h-full'>
+       
         <View>
           {/* <Onboarding/> */}
 

@@ -1,20 +1,36 @@
 import { Animated } from 'react-native'
-import React,{useRef} from 'react'
+import React,{useRef,useState,useEffect} from 'react'
 
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { StatusBar } from 'expo-status-bar'
 
 // components
-import Button from '../../components/Button'
 import Navbar from '../../components/Navbar'
 import Banner from '../../components/Banner'
-
-
 import Row from '../../components/Row'
+
+// axios
+import { BaseUrl } from '../../Axios/axios'
+
+import Toast from "react-native-root-toast";
+import { ToastOptions } from '../../config/toast'
 
 const Home = () => {
   const scrollY = useRef(new Animated.Value(0)).current;
+  const [latest,setLatest] = useState({})
 
+  useEffect(()=>{
+    BaseUrl.get('/movie/top_rated')
+    .then((response)=>{
+       if(response.status === 200){
+        const num = Math.floor(Math.random(0)*20)
+        setLatest(response.data.results[num])
+       }
+    }).catch((err)=>{
+      Toast.show('An error occured',ToastOptions)
+      console.log(err)
+    })
+  },[])
   return (
    <SafeAreaView className="bg-primary h-full">
     <Navbar scrollY={scrollY}/>
@@ -27,13 +43,13 @@ const Home = () => {
         scrollEventThrottle={16}
      >
 
-     <Banner />
+     <Banner movie={latest}/>
 
-      <Row title='Animation'/>
+      <Row title='Now Playing' url='/movie/now_playing'/>
 
-      <Row title='Upcoming'/>
+      {/* <Row title='Upcoming' />
 
-      <Row title='Documentary'/>
+      <Row title='Documentary'/> */}
     
      </Animated.ScrollView>
      <StatusBar style='light' />

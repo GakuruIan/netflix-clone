@@ -3,16 +3,19 @@ import {
   Text,
   ScrollView,
   Image,
-  Animated,
-  FlatList,
+  Animated
 } from "react-native";
-import React, { useRef } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 // components
 import Button from "../../components/Button";
 import Navbar from "../../components/Navbar";
-import Row from "../../components/Row"
+import Row from "../../components/Row";
+import Cast from "../../components/Cast";
+
+// expo-router
+import { router, useLocalSearchParams } from "expo-router";
 
 // icons
 import {
@@ -20,14 +23,40 @@ import {
   CheckIcon,
   ChatBubbleBottomCenterTextIcon,
   ArrowDownOnSquareIcon,
-  PaperAirplaneIcon
+  PaperAirplaneIcon,
 } from "react-native-heroicons/outline";
 
-// image
-import action from "../../assets/images/Onboarding/action.jpg";
+// axios
+import { BaseUrl, ImageUrl } from "../../Axios/axios";
+
+// Toast
+import Toast from 'react-native-root-toast';
+import { ToastOptions } from "../../config/toast";
 
 const Movie = () => {
   const scrollY = useRef(new Animated.Value(0)).current;
+  const { id } = useLocalSearchParams();
+
+  const [movie, setMovie] = useState({});
+
+  const FetchMovie = async () => {
+    console.log(id);
+    await BaseUrl.get(`/movie/${id}`)
+      .then((response) => {
+        if (response.status === 200) {
+          // console.log(response.data);
+          setMovie(response.data)
+        }
+      })
+      .catch((err) => {
+        Toast.show('An error occured',ToastOptions)
+        console.log(err);
+      });
+  };
+
+  useEffect(() => {
+    FetchMovie();
+  }, []);
 
   return (
     <SafeAreaView className="bg-primary h-full">
@@ -35,7 +64,11 @@ const Movie = () => {
 
       <ScrollView>
         <Image
-          source={action}
+          source={{
+            uri: `${ImageUrl}/${
+              movie?.poster_path ? movie?.poster_path : movie?.backdrop_path
+            }`,
+          }}
           resizeMode="cover"
           className="h-96 w-full object-cover mb-4"
         />
@@ -44,17 +77,26 @@ const Movie = () => {
           {/* movie name and tags */}
           <View className="mb-2">
             <Text className="text-white text-3xl font-title">
-              Kingkong and Godzilla
+              {movie?.original_title ? movie?.original_title : movie?.title}
             </Text>
 
             {/* tags */}
-            <View className="flex-row gap-x-2 items-center my-2">
-              <Text className="text-gray-400 font-text-light">Action</Text>
-              <Text className="text-gray-400 font-text-light">
-                Supernatural
-              </Text>
-              <Text className="text-gray-400 font-text-light">Mysterious</Text>
-            </View>
+
+            {movie?.genres?.length > 0 && (
+              <View className="flex-row gap-x-2 items-center my-2">
+                {movie?.genres.map((genre) => {
+                  return (
+                    <Text
+                      key={genre.id}
+                      className="text-gray-400 font-text-light"
+                    >
+                      {genre.name}
+                    </Text>
+                  );
+                })}
+              </View>
+            )}
+
             {/* tags */}
           </View>
           {/* movie name and tags */}
@@ -82,31 +124,33 @@ const Movie = () => {
           {/* movie overview */}
           <View className=" mb-2">
             <Text className="text-base text-gray-400 font-text-light">
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Itaque,
-              eius molestias? Sed cumque aspernatur perspiciatis debitis at sint
-              ad laboriosam iure in, tenetur quae. Unde distinctio tempore
-              quidem perspiciatis officia?
+              {movie?.overview}
             </Text>
           </View>
-           {/* movie overview */}
+          {/* movie overview */}
 
           {/* actions */}
           <View className=" mt-2 mb-4 flex-row items-center">
-           <View className="flex-row items-center py-2 mr-2  rounded-md bg-primaryBtn px-4">
-              <CheckIcon color="#fff"/>
-              <Text className='text-white font-text-light text-base mx-2'>My List</Text>
-           </View>
+            <View className="flex-row items-center py-2 mr-2  rounded-md bg-primaryBtn px-4">
+              <CheckIcon color="#fff" />
+              <Text className="text-white font-text-light text-base mx-2">
+                My List
+              </Text>
+            </View>
 
-           <View className="flex-row items-center py-2 mr-2 rounded-md bg-primaryBtn px-4">
-              <ChatBubbleBottomCenterTextIcon color="#fff" scale={20}/>
-              <Text className='text-white font-text-light text-base mx-2'>Reviews</Text>
-           </View>
+            <View className="flex-row items-center py-2 mr-2 rounded-md bg-primaryBtn px-4">
+              <ChatBubbleBottomCenterTextIcon color="#fff" scale={20} />
+              <Text className="text-white font-text-light text-base mx-2">
+                Reviews
+              </Text>
+            </View>
 
-           <View className="flex-row items-center py-2 mr-2 rounded-md bg-primaryBtn px-4">
-              <PaperAirplaneIcon color="#fff" scale={20}/>
-              <Text className='text-white font-text-light text-base mx-2'>Recommend</Text>
-           </View>
-
+            <View className="flex-row items-center py-2 mr-2 rounded-md bg-primaryBtn px-4">
+              <PaperAirplaneIcon color="#fff" scale={20} />
+              <Text className="text-white font-text-light text-base mx-2">
+                Recommend
+              </Text>
+            </View>
           </View>
           {/* actions */}
 
@@ -115,31 +159,13 @@ const Movie = () => {
             <Text className="text-white font-text-title text-xl mb-4">
               Top Cast
             </Text>
-            <FlatList
-              horizontal
-              showsHorizontalScrollIndicator={false}
-              data={[1, 2, 3, 4, 5]}
-              keyExtractor={(item) => item}
-              renderItem={({ item }) => (
-                <View className="mx-1 h-full ">
-                  <Image
-                    source={action}
-                    resizeMode="cover"
-                    className="mb-1 h-24 w-24 rounded-md object-cover"
-                  />
-                  <Text className="text-white font-text-light ">
-                    Actor name
-                  </Text>
-                  <Text className="text-gray-400 font-text-light ">role</Text>
-                </View>
-              )}
-            />
+            {/* casts list */}
+             <Cast url={`movie/${id}/credits`}/>
+            {/* cast list */}
           </View>
           {/*cast information  */}
 
-          
-          <Row title="More Like This"/>
-
+          <Row title="More Like This" url={`movie/${id}/similar`} wide={false}/>
         </View>
       </ScrollView>
     </SafeAreaView>

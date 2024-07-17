@@ -3,6 +3,8 @@ import React,{useEffect} from 'react'
 import { useFonts } from 'expo-font'
 import { SplashScreen,Stack } from 'expo-router'
 
+import { RootSiblingParent } from 'react-native-root-siblings';
+
 const Layout = () => {
 
     const [loadedFonts,error] = useFonts({
@@ -28,12 +30,14 @@ const Layout = () => {
     }
 
   return (
-   <Stack>
-     <Stack.Screen name='index' options={{headerShown:false}}/>
-     <Stack.Screen name="(auth)" options={{headerShown:false}}/>
-     <Stack.Screen name="(tabs)" options={{headerShown:false}}/>
-     <Stack.Screen name="movie/[id]"  options={{headerShown:false}} />
-   </Stack>
+    <RootSiblingParent>
+        <Stack>
+          <Stack.Screen name='index' options={{headerShown:false}}/>
+          <Stack.Screen name="(auth)" options={{headerShown:false}}/>
+          <Stack.Screen name="(tabs)" options={{headerShown:false}}/>
+          <Stack.Screen name="movie/[id]"  options={{headerShown:false}} />
+        </Stack>
+    </RootSiblingParent>
   )
 }
 
