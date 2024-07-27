@@ -6,7 +6,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import action from "../../assets/images/Onboarding/action.jpg";
 
 // icons
-import { CalendarDaysIcon, StarIcon } from "react-native-heroicons/outline";
+import { CalendarDaysIcon, StarIcon ,InboxArrowDownIcon} from "react-native-heroicons/outline";
 
 const Downloads = () => {
   return (
@@ -15,9 +15,16 @@ const Downloads = () => {
         <Text className="text-3xl font-title text-white">Downloads</Text>
       </View>
 
-      <ScrollView>
+      <View className='flex-1 items-center justify-center'>
+        <View className='items-center justify-center gap-y-4'>
+          <InboxArrowDownIcon color="#fff" scaleX={1.5} scaleY={1.5}/>
+          <Text className='text-gray-400 text-base  font-text-light'>Your Downloads will appear here</Text>
+        </View>
+      </View>
+
+      {/* <ScrollView>
         <View>
-          {/* content */}
+       
           <View className="px-2 flex-row mb-4">
             <Image
               source={action}
@@ -44,9 +51,9 @@ const Downloads = () => {
               </View>
             </View>
           </View>
-          {/* content */}
+       
         </View>
-      </ScrollView>
+      </ScrollView> */}
     </SafeAreaView>
   );
 };

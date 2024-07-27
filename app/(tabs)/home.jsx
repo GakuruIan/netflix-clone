@@ -18,18 +18,25 @@ import { ToastOptions } from '../../config/toast'
 const Home = () => {
   const scrollY = useRef(new Animated.Value(0)).current;
   const [latest,setLatest] = useState({})
+  const [loading,setLoading]= useState(false)
 
   useEffect(()=>{
+    setLoading(true)
     BaseUrl.get('/movie/top_rated')
     .then((response)=>{
        if(response.status === 200){
         const num = Math.floor(Math.random(0)*20)
         setLatest(response.data.results[num])
+        setLoading(false)
        }
     }).catch((err)=>{
       Toast.show('An error occured',ToastOptions)
       console.log(err)
     })
+    .finally(()=>{
+      setLoading(false)
+    })
+
   },[])
   return (
    <SafeAreaView className="bg-primary h-full">
@@ -43,7 +50,7 @@ const Home = () => {
         scrollEventThrottle={16}
      >
 
-     <Banner movie={latest}/>
+     <Banner movie={latest} loading={loading}/>
 
       <Row title='Now Playing' url='/movie/now_playing'/>
 

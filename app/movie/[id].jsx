@@ -2,15 +2,16 @@ import {
   View,
   Text,
   ScrollView,
+  StyleSheet,
+  TouchableOpacity,
   Image,
-  Animated
+  Animated,
 } from "react-native";
 import React, { useRef, useState, useEffect } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 // components
 import Button from "../../components/Button";
-import Navbar from "../../components/Navbar";
 import Row from "../../components/Row";
 import Cast from "../../components/Cast";
 
@@ -24,32 +25,43 @@ import {
   ChatBubbleBottomCenterTextIcon,
   ArrowDownOnSquareIcon,
   PaperAirplaneIcon,
+  ChevronLeftIcon,
 } from "react-native-heroicons/outline";
 
 // axios
 import { BaseUrl, ImageUrl } from "../../Axios/axios";
 
 // Toast
-import Toast from 'react-native-root-toast';
+import Toast from "react-native-root-toast";
 import { ToastOptions } from "../../config/toast";
+
+// responsive dimensions
+import {responsiveHeight,responsiveWidth,responsiveFontSize} from "react-native-responsive-dimensions";
 
 const Movie = () => {
   const scrollY = useRef(new Animated.Value(0)).current;
+
+  const titleAppearThreshold = 600;
+
+  const titleOpacity = scrollY.interpolate({
+    inputRange: [0, titleAppearThreshold],
+    outputRange: [0, 1],
+    extrapolate: 'clamp',
+  });
+
   const { id } = useLocalSearchParams();
 
   const [movie, setMovie] = useState({});
 
   const FetchMovie = async () => {
-    console.log(id);
     await BaseUrl.get(`/movie/${id}`)
       .then((response) => {
         if (response.status === 200) {
-          // console.log(response.data);
-          setMovie(response.data)
+          setMovie(response.data);
         }
       })
       .catch((err) => {
-        Toast.show('An error occured',ToastOptions)
+        Toast.show("An error occured", ToastOptions);
         console.log(err);
       });
   };
@@ -60,18 +72,45 @@ const Movie = () => {
 
   return (
     <SafeAreaView className="bg-primary h-full">
-      <Navbar scrollY={scrollY} />
+      {/* animated header */}
+      <Animated.View>
+        <View className="px-2 h-16  w-full flex-row items-center justify-between">
+          <TouchableOpacity onPress={() => router.back()}>
+            <ChevronLeftIcon color="#fff" className="h-10 w-10" />
+          </TouchableOpacity>
+          <Animated.Text
+            style={{opacity:titleOpacity}}
+            numberOfLines={1}
+            className="text-white font-text-light text-base"
+          >
+            {movie?.original_title ? movie?.original_title : movie?.title}
+          </Animated.Text>
+          <Text></Text>
+        </View>
+      </Animated.View>
 
-      <ScrollView>
-        <Image
-          source={{
-            uri: `${ImageUrl}/${
-              movie?.poster_path ? movie?.poster_path : movie?.backdrop_path
-            }`,
-          }}
-          resizeMode="cover"
-          className="h-96 w-full object-cover mb-4"
-        />
+      {/* animated header */}
+
+      <Animated.ScrollView
+        onScroll={Animated.event(
+          [{ nativeEvent: { contentOffset: { y: scrollY } } }],
+          { useNativeDriver: true }
+        )}
+        scrollEventThrottle={16}
+        bounces={false}
+      >
+        <View className='px-1 flex-row items-center justify-center'>
+          <Image
+            source={{
+              uri: `${ImageUrl}/${
+                movie?.poster_path ? movie?.poster_path : movie?.backdrop_path
+              }`,
+            }}
+            resizeMode="cover"
+            style={styles.image}
+            className=" object-cover rounded-md mb-4"
+          />
+        </View>
 
         <View className="px-2.5 pb-4">
           {/* movie name and tags */}
@@ -160,16 +199,30 @@ const Movie = () => {
               Top Cast
             </Text>
             {/* casts list */}
-             <Cast url={`movie/${id}/credits`}/>
+            <Cast url={`movie/${id}/credits`} />
             {/* cast list */}
           </View>
           {/*cast information  */}
 
-          <Row title="More Like This" url={`movie/${id}/similar`} wide={false}/>
+          <Row
+            title="More Like This"
+            url={`movie/${id}/similar`}
+            wide={false}
+          />
         </View>
-      </ScrollView>
+      </Animated.ScrollView>
     </SafeAreaView>
   );
 };
 
 export default Movie;
+
+const styles = StyleSheet.create({
+  image: {
+    height: responsiveHeight(50),
+    width: responsiveWidth(95),
+   
+  },
+
+
+});

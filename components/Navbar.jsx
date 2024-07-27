@@ -4,36 +4,36 @@ import React,{useRef} from "react";
 import logo from "../assets/images/netflix-logo.png";
 import profile from "../assets/images/Profile/blue-profile.png";
 
-const Navbar = ({scrollY}) => {
+// icons
+import { BellIcon } from "react-native-heroicons/outline";
+import Category from "./Category";
+
+const Navbar = () => {
     
   return (
-    <View className="">
-      <Animated.View
-        className="h-16 w-full bg-transparent border-b border-b-light  flex-row items-center justify-between px-2 z-20"
-        style={{
-          transform: [
-            {
-              translateY: scrollY.interpolate({
-                inputRange: [0, 50, 100],
-                outputRange: [0, 0, -10],
-                extrapolate: "clamp",
-              }),
-            },
-          ],
-        }}
+    <View className="pb-3 px-2">
+      <View
+        className="pt-4 mb-4 w-full flex-row items-center justify-between  z-20"
       >
         <Image
           source={logo}
           resizeMode="contain"
           className="h-6 w-6 object-fit"
         />
-        <Text className='text-white text-xl font-text-light'>Netflix</Text>
+        
+        <View className="flex-row items-center gap-x-4">
+         
+         <BellIcon color="#fff"/>
         <Image
           source={profile}
           resizeMode="contain"
           className="h-6 w-6 object-fit"
         />
-      </Animated.View>
+        </View>
+
+      </View>
+      
+      <Category/>
     </View>
   );
 };
