@@ -4,6 +4,9 @@ import { useFonts } from 'expo-font'
 import { SplashScreen,Stack } from 'expo-router'
 
 import { RootSiblingParent } from 'react-native-root-siblings';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
+
+import GlobalProvider from '../context/Context'
 
 const Layout = () => {
 
@@ -30,14 +33,18 @@ const Layout = () => {
     }
 
   return (
-    <RootSiblingParent>
-        <Stack>
-          <Stack.Screen name='index' options={{headerShown:false}}/>
-          <Stack.Screen name="(auth)" options={{headerShown:false}}/>
-          <Stack.Screen name="(tabs)" options={{headerShown:false}}/>
-          <Stack.Screen name="movie/[id]"  options={{headerShown:false}} />
-        </Stack>
-    </RootSiblingParent>
+    <GestureHandlerRootView>
+      <GlobalProvider>
+      <RootSiblingParent>
+          <Stack>
+            <Stack.Screen name='index' options={{headerShown:false}}/>
+            <Stack.Screen name="(auth)" options={{headerShown:false}}/>
+            <Stack.Screen name="(tabs)" options={{headerShown:false}}/>
+            <Stack.Screen name="movie/[id]"  options={{headerShown:false}} />
+          </Stack>
+      </RootSiblingParent>
+      </GlobalProvider>
+    </GestureHandlerRootView>
   )
 }
 

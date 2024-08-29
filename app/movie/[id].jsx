@@ -24,7 +24,6 @@ import {
   CheckIcon,
   ChatBubbleBottomCenterTextIcon,
   ArrowDownOnSquareIcon,
-  PaperAirplaneIcon,
   ChevronLeftIcon,
 } from "react-native-heroicons/outline";
 
@@ -41,7 +40,7 @@ import {responsiveHeight,responsiveWidth,responsiveFontSize} from "react-native-
 const Movie = () => {
   const scrollY = useRef(new Animated.Value(0)).current;
 
-  const titleAppearThreshold = 600;
+  const titleAppearThreshold = responsiveHeight(50);
 
   const titleOpacity = scrollY.interpolate({
     inputRange: [0, titleAppearThreshold],
@@ -99,7 +98,7 @@ const Movie = () => {
         scrollEventThrottle={16}
         bounces={false}
       >
-        <View className='px-1 flex-row items-center justify-center'>
+        <View className='px-1 mt-2 flex-row items-center justify-center'>
           <Image
             source={{
               uri: `${ImageUrl}/${
@@ -169,27 +168,22 @@ const Movie = () => {
           {/* movie overview */}
 
           {/* actions */}
-          <View className=" mt-2 mb-4 flex-row items-center">
-            <View className="flex-row items-center py-2 mr-2  rounded-md bg-primaryBtn px-4">
+          <View className={`mt-2 mb-4 flex-row items-center  w-[${responsiveWidth}]`}>
+
+            <Button classes={"flex-row flex-1  justify-center  items-center py-3 mr-2  rounded-md bg-primaryBtn hover:bg-red-500 transition-colors duration-75 "}>
               <CheckIcon color="#fff" />
-              <Text className="text-white font-text-light text-base mx-2">
+              <Text className="text-white font-text-light text-base ml-3">
                 My List
               </Text>
-            </View>
+            </Button>
 
-            <View className="flex-row items-center py-2 mr-2 rounded-md bg-primaryBtn px-4">
+            <Button classes={"flex-row flex-1  justify-center  items-center py-3 mr-2  rounded-md bg-primaryBtn hover:bg-red-500 transition-colors duration-75 "} >
               <ChatBubbleBottomCenterTextIcon color="#fff" scale={20} />
-              <Text className="text-white font-text-light text-base mx-2">
+              <Text className="text-white font-text-light text-base ml-3">
                 Reviews
               </Text>
-            </View>
+            </Button>
 
-            <View className="flex-row items-center py-2 mr-2 rounded-md bg-primaryBtn px-4">
-              <PaperAirplaneIcon color="#fff" scale={20} />
-              <Text className="text-white font-text-light text-base mx-2">
-                Recommend
-              </Text>
-            </View>
           </View>
           {/* actions */}
 
@@ -221,7 +215,6 @@ const styles = StyleSheet.create({
   image: {
     height: responsiveHeight(50),
     width: responsiveWidth(95),
-   
   },
 
 

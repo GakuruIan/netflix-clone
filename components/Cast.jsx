@@ -17,7 +17,6 @@ const Cast = ({url}) => {
         .then((response)=>{
             if(response.status === 200){
                 setCasts(response.data.cast)
-                console.log(response.data)
             }
         })
         .catch((err)=>{

@@ -11,7 +11,12 @@ import { Link } from 'expo-router'
 import Onboarding from '../components/Onboarding'
 import Profile from '../screens/Profile'
 
+// context
+import {useGlobalContext} from '../context/Context'
+
 const Index = () => {
+  const {user} = useGlobalContext()
+
   return (
   
     <SafeAreaView className='bg-primary h-full'>
@@ -20,7 +25,7 @@ const Index = () => {
           {/* <Onboarding/> */}
 
           {/* <Profile/> */}
-          <Link href='/home' className='text-white text-3xl'>Home</Link>
+          <Link href='/register' className='text-white text-3xl'>Home</Link>
         </View>
         <StatusBar style='light'/>
     </SafeAreaView>
