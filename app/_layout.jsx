@@ -41,6 +41,7 @@ const Layout = () => {
             <Stack.Screen name="(auth)" options={{headerShown:false}}/>
             <Stack.Screen name="(tabs)" options={{headerShown:false}}/>
             <Stack.Screen name="movie/[id]"  options={{headerShown:false}} />
+            <Stack.Screen name="Genre/[id]"  options={{headerShown:false}} />
           </Stack>
       </RootSiblingParent>
       </GlobalProvider>

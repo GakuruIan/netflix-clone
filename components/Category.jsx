@@ -1,5 +1,7 @@
-import { View, Text ,FlatList} from 'react-native'
-import React ,{useState,useEffect}from 'react'
+import { View, Text ,FlatList,Pressable} from 'react-native'
+import React ,{useState,useEffect,useMemo}from 'react'
+
+import { router} from "expo-router";
 
 import { BaseUrl } from '../Axios/axios'
 
@@ -8,7 +10,8 @@ import Toast from "react-native-root-toast";
 import { ToastOptions } from '../config/toast'
 
 const Category = () => {
-   const [categories,setCategories] = useState()
+   const [categories,setCategories] = useState([])
+   const [activeItem,setActiveItem] = useState(null);
 
    useEffect(()=>{
       BaseUrl.get('genre/movie/list')
@@ -23,16 +26,28 @@ const Category = () => {
          console.log(err)
       })
    },[])
+
+   const memorizedCategories = useMemo(()=>categories,[categories])
+
+   const handlePress=(id,name)=>{
+     setActiveItem(id)
+    
+     router.push({
+        pathname: `/Genre/${id}`,
+        params: { name },
+      });
+   }
+
   return (
    <FlatList 
-    data={categories}
+    data={memorizedCategories}
     horizontal
     showsHorizontalScrollIndicator={false}
     keyExtractor={(item=>item.id)}
     renderItem={({item})=>(
-        <View className='bg-white py-1.5 px-4 flex-row mx-1 flex-1 rounded-sm'>
-            <Text className='font-text-light text-base'>{item.name}</Text>
-        </View>
+        <Pressable onPress={()=>handlePress(item?.id,item?.name)} className={`border border-slate-300 py-1.5 px-4 flex-row mx-1 flex-1 rounded-md ${activeItem === item.id && 'bg-white'}`}>
+            <Text className={` font-text-light text-base ${activeItem === item.id ? 'text-black' : 'text-white'}`}>{item.name}</Text>
+        </Pressable>
     )}
    />
   )

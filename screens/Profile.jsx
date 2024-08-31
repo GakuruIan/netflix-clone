@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState, useCallback } from "react";
+import { useMemo, useRef, useState, useCallback,useEffect } from "react";
 import { View, Text, ScrollView, Image, StyleSheet,Pressable } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { StatusBar } from "expo-status-bar";
@@ -8,50 +8,102 @@ import BottomSheet, { BottomSheetTextInput } from "@gorhom/bottom-sheet";
 import Header from "../components/Header";
 import Button from "../components/Button";
 
+// Appwrite
+import { GetDefaultImages } from "../Appwrite/Appwrite";
+
 // icons
 import { PencilSquareIcon, PlusIcon ,CheckCircleIcon} from "react-native-heroicons/solid";
 
-// images
-import blue from "../assets/images/Profile/blue-profile.png";
-import purple from "../assets/images/Profile/purple-profile.png";
-import red from "../assets/images/Profile/red-profile.png";
-import green from "../assets/images/Profile/green-profile.png";
+
+// context
+import { useGlobalContext } from "../context/Context";
+
+// Appwrite
+import {createProfile,GetuserProfile} from '../Appwrite/Appwrite'
+
+// Toast
+import Toast from "react-native-root-toast";
+import {ToastOptions} from '../config/toast'
+
+// router
+import { router } from 'expo-router'
 
 const Profile = () => {
+  const {user,updateUser} = useGlobalContext()
+  
+  const [profiles,setProfiles]= useState([])
+  const [Images,setImages]= useState([])
+
   const [sheetIndex, setSheetIndex] = useState(-1);
   const [selectedItem,setSelectedItem] = useState(null);
   const [name,setName] = useState("")
 
+
   const bottomSheetRef = useRef(null);
   const snapPoints = useMemo(() => ["50%","70%"], []);
 
-  const handlePresentPress = useCallback(() => {
-    setSheetIndex(0);
-  }, []);
-
-  const handleSubmit=()=>{
-      
-      setSelectedItem(null)
+   // fetching user's profile
+   async function FetchData(){
+    try {
+      const results = await GetuserProfile(user?.$id)
+      setProfiles(results)
+    
+    } catch (error) {
+       Toast(`${error.message}`,ToastOptions)
+       console.log(error)
+    }
   }
 
-  const data = [
-    {
-      id: 1,
-      image: red,
-    },
-    {
-      id: 2,
-      image: blue,
-    },
-    {
-      id: 3,
-      image: purple,
-    },
-    {
-      id: 4,
-      image: green,
-    },
-  ];
+  useEffect(() => {
+
+    FetchData()
+   
+  }, [profiles]);
+
+  // activating bottomsheet
+  const handlePresentPress = useCallback(async() => {
+    setSheetIndex(0);
+    const result = await GetDefaultImages()
+
+    setImages(result.documents)
+  }, []);
+  
+  // choosing profile
+  const handlePress=(image_url,name)=>{
+    const profile = {
+      image_url,
+      name
+    }
+
+    updateUser(profile)
+
+    router.push('/home')
+  }
+
+  // creating profile
+  const handleSubmit=async()=>{ 
+      
+     try {
+      if(!name || !selectedItem ){
+        throw Error("Please Fill in all the Fields")
+      }
+      const result = await createProfile(user.$id,name,selectedItem)
+
+      if(result){
+        Toast.show("Profile created successfully",ToastOptions)
+      }
+
+     } catch (error) {
+       Toast.show(`${error.message}`,ToastOptions)
+     }
+     finally{
+       setName("")
+       setSelectedItem(null)
+       setSheetIndex(-1)
+     }
+  }
+
+
 
   return (
     <SafeAreaView className="bg-primary h-full  relative">
@@ -64,50 +116,23 @@ const Profile = () => {
 
         <View className="px-4 mt-8 items-center">
           <View className="flex flex-row  w-80  flex-wrap items-center justify-center gap-x-10 gap-y-8">
-            <View className="w-28">
-              <Image
-                source={green}
-                resizeMode="cover"
-                className="h-24 w-full object-cover rounded-sm"
-              />
-              <Text className="text-white text-base font-text-light  mt-1 text-center">
-                Profile
-              </Text>
-            </View>
+            
+            {
+              profiles.map((profile)=>{
+                 return <Pressable onPress={()=>handlePress(profile.defaultimage?.image_url,profile?.name)} className="w-28" key={profile.$id}>
+                 <Image
+                   source={{uri:profile.defaultimage?.image_url}}
+                   resizeMode="contain"
+                   className="h-24 w-28 object-cover rounded-sm"
+                 />
+                 <Text className="text-white text-base font-text-light  mt-1 text-center">
+                  {profile?.name}
+                 </Text>
+               </Pressable>
+              })
+            }
 
-            <View className="w-28">
-              <Image
-                source={purple}
-                resizeMode="cover"
-                className="h-24 w-full object-cover rounded-sm"
-              />
-              <Text className="text-white text-base font-text-light  mt-1 text-center">
-                Profile
-              </Text>
-            </View>
-
-            <View className="w-28">
-              <Image
-                source={blue}
-                resizeMode="cover"
-                className="h-24 w-full object-cover rounded-sm"
-              />
-              <Text className="text-white text-base font-text-light  mt-1 text-center">
-                Profile
-              </Text>
-            </View>
-
-            <View className="w-28">
-              <Image
-                source={red}
-                resizeMode="cover"
-                className="h-24 w-full object-cover rounded-sm"
-              />
-              <Text className="text-white text-base font-text-light  mt-1 text-center">
-                Profile
-              </Text>
-            </View>
-
+           
             {/* create profile */}
             <View className="w-24">
               <Button
@@ -156,16 +181,17 @@ const Profile = () => {
               </Text>
 
               <View className="flex-row mt-2">
-                {data.map((item) => {
+                {Images.map((image) => {
                   return (
-                    <Pressable className='relative' key={item.id} onPress={()=>setSelectedItem(item.id)}>
+                    <Pressable className='relative' key={image.$id} onPress={()=>setSelectedItem(image.$id)}>
                       <Image
-                        source={item.image}
-                        resizeMode="cover"
+                        source={{uri:image.image_url}}
+                        resizeMode="contain"
                         className={`h-20 w-20 mr-4 object-cover rounded-sm p-2 `}
                       />
+                     
                       {
-                        selectedItem === item.id &&
+                        selectedItem === image.$id &&
                         <View className="absolute top-[-8px] right-3">
                           <CheckCircleIcon scale={20} color="white" />
                         </View>

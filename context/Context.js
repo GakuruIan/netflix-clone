@@ -30,6 +30,13 @@ const GlobalProvider = ({children})=>{
         })
     },[])
 
+    const updateUser = (newData) => {
+        setUser(prevUser => ({
+            ...prevUser, 
+            ...newData 
+        }));
+    };
+
    return (
     <GlobalContext.Provider 
      value={{
@@ -37,6 +44,7 @@ const GlobalProvider = ({children})=>{
         isLoggedIn,
         setIsLoggedIn,
         user,
+        updateUser,
         setUser
     }}>
            {children}

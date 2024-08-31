@@ -15,6 +15,7 @@ const Config = {
   databaseId: AppwriteConfig.DATABASEID,
   usersCollectionId: AppwriteConfig.USERSCOLLECTIONID,
   profileCollectionId: AppwriteConfig.PROFILECOLLECTIONID,
+  defaultImagesCollectionId:AppwriteConfig.DEFAULFIMAGESCOLLECTIONID,
   storageBucketId: AppwriteConfig.STORAGEBUCKETID,
 };
 
@@ -25,6 +26,7 @@ const {
   databaseId,
   usersCollectionId,
   profileCollectionId,
+  defaultImagesCollectionId,
   storageBucketId,
 } = Config;
 
@@ -73,13 +75,13 @@ export const Login=async(email,password)=>{
     }
 }
 
-export const createProfile=async(userID,name,image_ref,image)=>{
+export const createProfile=async(userId,name,image_ref)=>{
     // user has the option to upload their image other should choose one of the default images given
     try {
-        const newProfile = await databases.createDocument(databaseId,profileCollectionId,ID.unique,{
+        const newProfile = await databases.createDocument(databaseId,profileCollectionId,ID.unique(),{
             name,
-            userID,
-            image_ref
+            user:userId,
+            defaultimage:image_ref
         })
 
         return newProfile
@@ -94,7 +96,7 @@ export const Getcurrentuser=async()=>{
 
       if(!currentAccount) throw new Error("No account")
 
-      const currentUser = await databases.listDocuments(Config.databaseId,
+      const currentUser = await databases.listDocuments(databaseId,
           Config.usersCollectionId,
           [Query.equal('accountId',currentAccount.$id)])
 
@@ -102,6 +104,29 @@ export const Getcurrentuser=async()=>{
       
       return currentUser.documents[0]
   } catch (error) {
-      console.log(error);
+    
+     throw new Error(error)
+      
   }
+}
+
+export const GetuserProfile=async(userID)=>{
+    try {
+      const profiles = await databases.listDocuments(databaseId,profileCollectionId,
+        [Query.equal('user',userID)])
+      
+      return profiles.documents
+    } catch (error) {
+      throw new Error(error)
+    }
+}
+
+export const GetDefaultImages =async()=>{
+   try {
+     const Images = await databases.listDocuments(databaseId,defaultImagesCollectionId)
+
+     return Images
+   } catch (error) {
+    throw new Error(error)
+   }
 }

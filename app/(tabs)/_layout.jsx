@@ -13,7 +13,7 @@ const Layout = () => {
         tabBarActiveTintColor:"#DF0912",
         tabBarInactiveTintColor:"#fff",
         tabBarStyle :{
-            backgroundColor:"#191B1E",
+            backgroundColor:"#010101",
             borderTopWidth:1,
             borderTopColor:"#24272D",
             height:65

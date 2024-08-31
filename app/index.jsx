@@ -24,8 +24,8 @@ const Index = () => {
         <View>
           {/* <Onboarding/> */}
 
-          {/* <Profile/> */}
-          <Link href='/register' className='text-white text-3xl'>Home</Link>
+          <Profile/>
+          {/* <Link href='/login' className='text-white text-3xl'>Home</Link> */}
         </View>
         <StatusBar style='light'/>
     </SafeAreaView>

@@ -8,8 +8,11 @@ import profile from "../assets/images/Profile/blue-profile.png";
 import { BellIcon } from "react-native-heroicons/outline";
 import Category from "./Category";
 
+import { useGlobalContext } from "../context/Context";
+
 const Navbar = () => {
-    
+    const {user} = useGlobalContext()
+
   return (
     <View className="pb-3 px-2">
       <View
@@ -25,7 +28,7 @@ const Navbar = () => {
          
          <BellIcon color="#fff"/>
         <Image
-          source={profile}
+          source={{uri:user?.image_url}}
           resizeMode="contain"
           className="h-6 w-6 object-fit"
         />
