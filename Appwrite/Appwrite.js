@@ -75,6 +75,15 @@ export const Login=async(email,password)=>{
     }
 }
 
+export const Logout=async()=>{
+   try {
+      const session=await account.deleteSession('current')
+      return session
+   } catch (error) {
+    throw new Error(error)
+   }
+}
+
 export const createProfile=async(userId,name,image_ref)=>{
     // user has the option to upload their image other should choose one of the default images given
     try {

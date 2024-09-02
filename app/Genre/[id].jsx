@@ -1,4 +1,4 @@
-import { View, Text, ScrollView,Image } from "react-native";
+import { View, Text, ScrollView,Image,StyleSheet } from "react-native";
 import React, { useState, useEffect } from "react";
 
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -19,6 +19,10 @@ import Header from "../../components/Header";
 import Toast from "react-native-root-toast";
 import { ToastOptions } from "../../config/toast";
 
+
+// responsive dimensions
+import {responsiveWidth} from "react-native-responsive-dimensions";
+
 const Genre = () => {
   const { id, name } = useLocalSearchParams();
   const [movies, setMovies] = useState([]);
@@ -29,7 +33,6 @@ const Genre = () => {
     )
       .then((response) => {
         if (response.status === 200) {
-          console.log(response.data);
           setMovies(response.data.results);
         }
       })
@@ -49,15 +52,16 @@ const Genre = () => {
 
       <ScrollView className="h-full">
 
-          <View className="px-2 pb-4 h-full flex-row justify-center gap-x-1 gap-y-3 flex-wrap">
+          <View className="px-2 pb-4 h-full flex-row  gap-x-2  gap-y-2 flex-wrap">
             {movies.map((item) => {
               return (
-                <Link href={`/movie/${item?.id}`} className="h-40 w-32" key={item.id}>
-                  <View className='h-40 w-32 '>
+                <Link href={`/movie/${item?.id}`} style={styles.image} className={` h-40 `}  key={item.id}>
+                  <View  style={styles.image} className={` h-40 `}>
                     <Image
                       source={{uri:`${ImageUrl}/${item?.poster_path ? item?.poster_path : item?.backdrop_path}`}}
                       resizeMode="cover"
                       className="h-full w-full object-cover rounded-sm"
+                      
                     />
                   </View>
                 </Link>
@@ -70,5 +74,16 @@ const Genre = () => {
     </SafeAreaView>
   );
 };
+
+
+const styles = StyleSheet.create({
+  image: {
+    width: responsiveWidth(30)
+
+  },
+});
+
+
+
 
 export default Genre;

@@ -1,4 +1,4 @@
-import React,{useState} from 'react'
+import React,{useState,useEffect} from 'react'
 
 import { View, Text,ScrollView} from 'react-native'
 import { StatusBar } from 'expo-status-bar'
@@ -34,9 +34,6 @@ const Login = () => {
      if(isLoggedIn){
       router.replace('/')
      }
-    return () => {
-      
-    };
   }, []);
 
   const handleSubmit=async()=>{
@@ -60,7 +57,7 @@ const Login = () => {
          setUser(result)
          setIsLoggedIn(true)
 
-         router.replace('/home')
+         router.replace('/')
       } catch (error) {
         Toast.show(`${error.message}`,ToastOptions)
       }

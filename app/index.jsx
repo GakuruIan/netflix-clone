@@ -1,11 +1,11 @@
 import { View} from 'react-native'
 import { StatusBar } from 'expo-status-bar'
-import React from 'react'
+import React,{useEffect,useState} from 'react'
 
 import { SafeAreaView } from 'react-native-safe-area-context'
 
 // links
-import { Link } from 'expo-router'
+import { Link,router ,useRootNavigationState} from 'expo-router'
 
 // components
 import Onboarding from '../components/Onboarding'
@@ -15,7 +15,20 @@ import Profile from '../screens/Profile'
 import {useGlobalContext} from '../context/Context'
 
 const Index = () => {
-  const {user} = useGlobalContext()
+  const {isLoggedIn} = useGlobalContext()
+
+  const [isMounted, setIsMounted] = useState(false);
+
+  // useEffect(() => {
+
+  //   setIsMounted(true);
+  // }, []);
+
+  // useEffect(() => {
+  //   if (isMounted && !isLoggedIn) {
+  //     router.replace('/login');
+  //   }
+  // }, [isMounted, isLoggedIn, router]);
 
   return (
   
@@ -25,7 +38,6 @@ const Index = () => {
           {/* <Onboarding/> */}
 
           <Profile/>
-          {/* <Link href='/login' className='text-white text-3xl'>Home</Link> */}
         </View>
         <StatusBar style='light'/>
     </SafeAreaView>

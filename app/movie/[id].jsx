@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   Image,
   Animated,
+  Dimensions
 } from "react-native";
 import React, { useRef, useState, useEffect } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -37,8 +38,13 @@ import { ToastOptions } from "../../config/toast";
 // responsive dimensions
 import {responsiveHeight,responsiveWidth,responsiveFontSize} from "react-native-responsive-dimensions";
 
+
 const Movie = () => {
+  const castRef = useRef(null)
   const scrollY = useRef(new Animated.Value(0)).current;
+
+  const [shouldFetch,setShouldFetch] = useState(false)
+  const [fetched,setFetched]= useState(false)
 
   const titleAppearThreshold = responsiveHeight(50);
 
@@ -69,6 +75,30 @@ const Movie = () => {
     FetchMovie();
   }, []);
 
+  const checkIfCastInView = (event) => {
+    event.persist();
+    
+    try {
+      if (castRef.current) {
+        castRef.current.measure((x, y, width, height, pageX, pageY) => {
+          const windowHeight = Dimensions.get('window').height;
+          
+          const scrollYValue = scrollY.__getValue();
+          const castTop = pageY;
+          const castBottom = pageY + height;
+          
+          if (castTop < scrollYValue + windowHeight && castBottom > scrollYValue) {
+            setShouldFetch(true)
+          } 
+        });
+      }
+    } catch (error) {
+      console.log(error)
+    }
+    
+  };
+
+
   return (
     <SafeAreaView className="bg-primary h-full">
       {/* animated header */}
@@ -93,7 +123,7 @@ const Movie = () => {
       <Animated.ScrollView
         onScroll={Animated.event(
           [{ nativeEvent: { contentOffset: { y: scrollY } } }],
-          { useNativeDriver: true }
+          { useNativeDriver: true ,listener:checkIfCastInView}
         )}
         scrollEventThrottle={16}
         bounces={false}
@@ -161,7 +191,7 @@ const Movie = () => {
 
           {/* movie overview */}
           <View className=" mb-2">
-            <Text className="text-base text-gray-400 font-text-light">
+            <Text className="text-base text-gray-200 font-text-light">
               {movie?.overview}
             </Text>
           </View>
@@ -188,12 +218,12 @@ const Movie = () => {
           {/* actions */}
 
           {/*cast information  */}
-          <View className=" mb-2">
+          <View className=" mb-2"  ref={castRef} onLayout={checkIfCastInView}>
             <Text className="text-white font-text-title text-xl mb-4">
               Top Cast
             </Text>
             {/* casts list */}
-            <Cast url={`movie/${id}/credits`} />
+            <Cast url={`movie/${id}/credits`} shouldFetch={shouldFetch} />
             {/* cast list */}
           </View>
           {/*cast information  */}

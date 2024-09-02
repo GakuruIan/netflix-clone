@@ -7,8 +7,9 @@ import { BaseUrl,ImageUrl } from "../Axios/axios";
 import Toast from "react-native-root-toast";
 import {ToastOptions} from '../config/toast'
 
-const Cast = ({url}) => {
-  const [casts,setCasts]= useState()
+const Cast = ({url,shouldFetch}) => {
+  const [casts,setCasts]= useState([])
+  const [hasFetched,setHasFetched] = useState(false)
 
   useEffect(()=>{
 
@@ -24,12 +25,17 @@ const Cast = ({url}) => {
             console.log(err);
         })
     }
-   
+     
+    if(shouldFetch && !hasFetched){
+      FetchCasts()
+        setHasFetched(true)
+    }
     FetchCasts()
   },[])
 
   return (
     <FlatList
+
       horizontal
       showsHorizontalScrollIndicator={false}
       data={casts}

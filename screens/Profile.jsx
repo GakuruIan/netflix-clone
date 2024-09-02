@@ -29,7 +29,7 @@ import {ToastOptions} from '../config/toast'
 import { router } from 'expo-router'
 
 const Profile = () => {
-  const {user,updateUser} = useGlobalContext()
+  const {user,updateUser,isLoggedIn} = useGlobalContext()
   
   const [profiles,setProfiles]= useState([])
   const [Images,setImages]= useState([])
@@ -38,27 +38,32 @@ const Profile = () => {
   const [selectedItem,setSelectedItem] = useState(null);
   const [name,setName] = useState("")
 
+  
 
   const bottomSheetRef = useRef(null);
   const snapPoints = useMemo(() => ["50%","70%"], []);
 
-   // fetching user's profile
+
+  useEffect(() => {
+    //  fetching user's profile
    async function FetchData(){
     try {
-      const results = await GetuserProfile(user?.$id)
-      setProfiles(results)
-    
+      
+      if(user?.$id){
+        const results = await GetuserProfile(user?.$id)
+        setProfiles(results)
+       
+      }
+      
     } catch (error) {
        Toast(`${error.message}`,ToastOptions)
        console.log(error)
     }
   }
 
-  useEffect(() => {
-
     FetchData()
    
-  }, [profiles]);
+  }, [user?.$id]);
 
   // activating bottomsheet
   const handlePresentPress = useCallback(async() => {

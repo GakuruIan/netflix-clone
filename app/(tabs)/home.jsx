@@ -42,7 +42,7 @@ const Home = () => {
    <SafeAreaView className="bg-primary h-full">
     <Navbar scrollY={scrollY}/>
 
-     <Animated.ScrollView className='h-full relative'
+     <Animated.ScrollView className='h-full relative pb-6'
         onScroll={Animated.event(
           [{ nativeEvent: { contentOffset: { y: scrollY } } }],
           { useNativeDriver: true }
@@ -54,10 +54,10 @@ const Home = () => {
 
       <Row title='Now Playing' url='/movie/now_playing'/>
 
-      {/* <Row title='Upcoming' />
+      <Row title='Upcoming' url='/movie/upcoming' />
 
-      <Row title='Documentary'/> */}
-    
+      <Row title='Top Rated' url='/movie/top_rated'/>
+
      </Animated.ScrollView>
      <StatusBar style='light' />
    </SafeAreaView>

@@ -19,7 +19,6 @@ const Row = ({ title, url,wide }) => {
     await BaseUrl.get(url).then((response)=>{
       if(response.status === 200){
         setMovies(response.data.results)
-
       }
     })
     .catch((err)=>{
