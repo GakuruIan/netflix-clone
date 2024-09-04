@@ -5,7 +5,7 @@ import React,{useEffect,useState} from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 
 // links
-import { Link,router ,useRootNavigationState} from 'expo-router'
+import { Link,router ,useRootNavigationState,Redirect} from 'expo-router'
 
 // components
 import Onboarding from '../components/Onboarding'
@@ -15,20 +15,9 @@ import Profile from '../screens/Profile'
 import {useGlobalContext} from '../context/Context'
 
 const Index = () => {
-  const {isLoggedIn} = useGlobalContext()
+  const {isLoggedIn,user,isLoading} = useGlobalContext()
 
-  const [isMounted, setIsMounted] = useState(false);
-
-  // useEffect(() => {
-
-  //   setIsMounted(true);
-  // }, []);
-
-  // useEffect(() => {
-  //   if (isMounted && !isLoggedIn) {
-  //     router.replace('/login');
-  //   }
-  // }, [isMounted, isLoggedIn, router]);
+  if (!isLoading && !isLoggedIn) return <Redirect href="/login" />;
 
   return (
   

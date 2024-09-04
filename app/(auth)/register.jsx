@@ -25,6 +25,9 @@ import {ToastOptions} from '../../config/toast'
 // context
 import { useGlobalContext } from '../../context/Context'
 
+// components
+import Modal from '../../components/Loader/Modal'
+
 const Register = () => {
     const [form,setForm] = useState({})
     const [submitting,setSubmitting]= useState(false)
@@ -50,12 +53,12 @@ const Register = () => {
          }
          
 
-        const newUser = await RegisterUser(Fullname,Email,password)
+        const newUser = await RegisterUser(Fullname,Email.toLowerCase(),password)
         
-        setUser(newUser)
-        setIsLoggedIn(true)
-
-        router.replace('/')
+        if(newUser){
+          router.replace('/login')
+          Toast.show(`Account create successfully`,ToastOptions)
+        }
          
        } catch (error) {
          Toast.show(`${error.message}`,ToastOptions)
@@ -69,7 +72,9 @@ const Register = () => {
       <SafeAreaView className='h-full bg-primary pb-4'>
         <KeyboardAvoidingView className="flex-1"  behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
           <ScrollView>
-            <Header />
+             <Header />
+
+              <Modal isOpen={submitting} text="Signing up"/>
             <View className="mt-2 px-4">
               <Text className='text-3xl mb-1 text-white font-title'>Register</Text>
               <Text className='text-base mb-8 text-gray-300 font-text-light'>Let's get you into your account</Text>

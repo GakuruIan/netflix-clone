@@ -1,5 +1,5 @@
 import { View, Text, ScrollView, Image } from "react-native";
-import React from "react";
+import React,{useState} from "react";
 
 import { SafeAreaView } from "react-native-safe-area-context";
 
@@ -33,10 +33,15 @@ import {ToastOptions} from '../../config/toast'
 // expo router
 import {router} from 'expo-router'
 
+// components
+import Modal from '../../components/Loader/Modal'
+
 const Settings = () => {
   const { user,setUser ,setIsLoggedIn} = useGlobalContext();
+  const [isLoading,setIsLoading] =  useState(false);
 
   const handleSignOut=async()=>{
+    setIsLoading(true)
      try {
         await Logout();
         
@@ -48,11 +53,15 @@ const Settings = () => {
      } catch (error) {
       Toast.show(`${error.message}`,ToastOptions)
      }
+     finally{
+      setIsLoading(false)
+     }
   }
 
   return (
     <SafeAreaView className="bg-primary h-full">
       <Header text="App settings" />
+      <Modal isOpen={isLoading} text="Signing out"/>
       <ScrollView className="h-full">
         <View className="px-4">
           <Wrapper title="Video Playback">

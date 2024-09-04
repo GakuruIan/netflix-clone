@@ -37,6 +37,14 @@ const GlobalProvider = ({children})=>{
         }));
     };
 
+    const modifyUser=(newName,image_url)=>{
+       setUser(user=>({
+         ...user,
+         name:newName,
+         profile_image:image_url
+       }))
+    }
+
    return (
     <GlobalContext.Provider 
      value={{
@@ -45,7 +53,8 @@ const GlobalProvider = ({children})=>{
         setIsLoggedIn,
         user,
         updateUser,
-        setUser
+        setUser,
+        modifyUser
     }}>
            {children}
     </GlobalContext.Provider>

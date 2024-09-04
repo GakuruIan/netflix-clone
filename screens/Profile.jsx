@@ -29,7 +29,7 @@ import {ToastOptions} from '../config/toast'
 import { router } from 'expo-router'
 
 const Profile = () => {
-  const {user,updateUser,isLoggedIn} = useGlobalContext()
+  const {user,updateUser} = useGlobalContext()
   
   const [profiles,setProfiles]= useState([])
   const [Images,setImages]= useState([])
@@ -63,7 +63,8 @@ const Profile = () => {
 
     FetchData()
    
-  }, [user?.$id]);
+  }, [user?.$id,profiles]);
+ 
 
   // activating bottomsheet
   const handlePresentPress = useCallback(async() => {
@@ -74,13 +75,15 @@ const Profile = () => {
   }, []);
   
   // choosing profile
-  const handlePress=(image_url,name)=>{
+  const handlePress=(image_url,name,profileId,image)=>{
     const profile = {
       image_url,
-      name
+      name,
+      profileId,
+      profile_image:image
     }
 
-    updateUser(profile)
+     updateUser(profile)
 
     router.push('/home')
   }
@@ -124,9 +127,9 @@ const Profile = () => {
             
             {
               profiles.map((profile)=>{
-                 return <Pressable onPress={()=>handlePress(profile.defaultimage?.image_url,profile?.name)} className="w-28" key={profile.$id}>
+                 return <Pressable onPress={()=>handlePress(profile.defaultImages?.image_url,profile?.name,profile?.$id,profile?.image)} className="w-28" key={profile.$id}>
                  <Image
-                   source={{uri:profile.defaultimage?.image_url}}
+                   source={{uri:profile.defaultImages?.image_url}}
                    resizeMode="contain"
                    className="h-24 w-28 object-cover rounded-sm"
                  />

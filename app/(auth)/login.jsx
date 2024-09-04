@@ -13,6 +13,7 @@ import Input from '../../components/Input'
 import Header from '../../components/Header'
 import Button from '../../components/Button'
 import { Link,router } from 'expo-router'
+import Modal from '../../components/Loader/Modal'
 
 // Toast
 import Toast from "react-native-root-toast";
@@ -50,7 +51,7 @@ const Login = () => {
           throw Error("Password must be more than 8 characters")
          }
 
-         await login(Email,password)
+         await login(Email.toLowerCase(),password)
          
          const result = await Getcurrentuser()
          
@@ -65,11 +66,17 @@ const Login = () => {
         setSubmitting(false)
       }    
   }
+
+
   
   return (
     <SafeAreaView className='h-full bg-primary'>
-        <ScrollView>
+        <ScrollView >
           <Header />
+
+           <Modal isOpen={submitting} text="Signing in"/>
+          
+
           <View className="mt-4 px-4">
             <Text className='text-3xl mb-1 text-white font-title'>Login</Text>
             <Text className='text-base mb-8 text-gray-300 font-text-light'>Let's get you into your account</Text>
@@ -93,8 +100,9 @@ const Login = () => {
               handleChange={(e)=>setForm({...form,password:e})}
             />
 
-            <View className="flex items-end my-1">
-                <Text className="text-gray-400 font-text-light">Forgot Password ?</Text>
+            <View className="flex flex-row items-center justify-between my-2">
+                <Link href="/register" className="text-gray-300 font-text-light">Don't have an account? Register</Link>
+                <Text className="text-gray-300 font-text-light">Forgot Password ?</Text>
             </View>
 
             <Button classes="bg-primaryBtn mt-4" isLoading={submitting} handlePress={handleSubmit}>
