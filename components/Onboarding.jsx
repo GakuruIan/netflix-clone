@@ -10,12 +10,18 @@ import {
   ImageBackground,
 } from "react-native";
 
-import { SafeAreaView } from "react-native-safe-area-context";
+// asyncStorage 
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+
 import { LinearGradient } from "expo-linear-gradient";
-//
+//data for onboarding screen
 import { data } from "../data/data";
+
+// poster image
 import poster from "../assets/images/Onboarding/poster.jpg";
 
+// components
 import Button from './Button'
 
 const Onboarding = () => {
@@ -24,9 +30,14 @@ const Onboarding = () => {
 
   const handleSlide=(e)=>{
     const contentOffsetX = e.nativeEvent.contentOffset.x
-     const currentIndex = Math.floor(contentOffsetX/width)
+     const currentIndex = Math.ceil(contentOffsetX/width)
 
     setCurrentSlide(currentIndex)
+  }
+
+  const handleGetStarted=async()=>{
+      await AsyncStorage.setItem('hasSeenOnboarding', 'true');
+      router.replace('/login')
   }
 
 
@@ -77,7 +88,7 @@ const Onboarding = () => {
           </View>
 
          <View className="px-2">
-           <Button classes="bg-primaryBtn " handlePress={()=>router.push('/register')}>
+           <Button classes="bg-primaryBtn " handlePress={handleGetStarted}>
             <Text className='text-base font-text-light text-white'>Get Started</Text>
           </Button>
          </View>

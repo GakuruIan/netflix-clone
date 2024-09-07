@@ -178,6 +178,17 @@ export const DeleteProfile=async(id)=>{
    }
 }
 
+export const DeleteAccount=async()=>{
+   try {
+     const id = (await account.get()).$id
+
+    //  await account.deleteIdentity(id)
+
+   } catch (error) {
+     throw new Error(error);
+   }
+}
+
 export const Getcurrentuser = async () => {
   try {
     const currentAccount = await account.get();

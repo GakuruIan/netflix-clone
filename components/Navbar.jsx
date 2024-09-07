@@ -15,7 +15,7 @@ import { Link } from "expo-router";
 
 const Navbar = () => {
   const { user } = useGlobalContext();
-
+  
   return (
     <View className="pb-3 px-2">
       <View className="pt-4 mb-4 w-full flex-row items-center justify-between  z-20">
@@ -35,7 +35,7 @@ const Navbar = () => {
             <View className="h-6 w-6">
 
             <Image
-              source={{ uri: user?.image_url }}
+              source={{ uri: user?.profile_image }}
               resizeMode="contain"
               className="h-full w-full "
             />

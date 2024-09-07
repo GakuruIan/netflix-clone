@@ -8,7 +8,7 @@ import {
   Animated,
   Dimensions
 } from "react-native";
-import React, { useRef, useState, useEffect } from "react";
+import React, { useRef, useState, useEffect,useMemo } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 // components
@@ -36,8 +36,13 @@ import Toast from "react-native-root-toast";
 import { ToastOptions } from "../../config/toast";
 
 // responsive dimensions
-import {responsiveHeight,responsiveWidth,responsiveFontSize} from "react-native-responsive-dimensions";
+import {responsiveHeight,responsiveWidth} from "react-native-responsive-dimensions";
 
+// bottom sheet
+import BottomSheet,{BottomSheetScrollView} from "@gorhom/bottom-sheet";
+
+// component
+import Reviews from "../../components/Reviews";
 
 const Movie = () => {
   const castRef = useRef(null)
@@ -45,6 +50,10 @@ const Movie = () => {
 
   const [shouldFetch,setShouldFetch] = useState(false)
   const [fetched,setFetched]= useState(false)
+  const [sheetIndex,setSheetIndex] = useState(-1)
+  const[reviews,setReviews] = useState([])
+
+  const snapPoints = useMemo(() => ["50%","70%"], []);
 
   const titleAppearThreshold = responsiveHeight(50);
 
@@ -98,6 +107,17 @@ const Movie = () => {
     
   };
 
+  const handleReviews=async()=>{
+    setSheetIndex(0)
+     await BaseUrl.get(`/movie/${id}/reviews`)
+     .then((res)=>{
+      setReviews(res.data.results)
+     })
+     .catch((err)=>{
+      Toast.show("An error occured", ToastOptions);
+      console.log(err);
+     })
+  }
 
   return (
     <SafeAreaView className="bg-primary h-full">
@@ -119,6 +139,8 @@ const Movie = () => {
       </Animated.View>
 
       {/* animated header */}
+
+
 
       <Animated.ScrollView
         onScroll={Animated.event(
@@ -200,14 +222,14 @@ const Movie = () => {
           {/* actions */}
           <View className={`mt-2 mb-4 flex-row items-center  w-[${responsiveWidth}]`}>
 
-            <Button classes={"flex-row flex-1  justify-center  items-center py-3 mr-2  rounded-md bg-primaryBtn hover:bg-red-500 transition-colors duration-75 "}>
+            <Button handlePress={()=>console.log("dummy")} classes={"flex-row flex-1  justify-center  items-center py-3 mr-2  rounded-md bg-primaryBtn hover:bg-red-500 transition-colors duration-75 "}>
               <CheckIcon color="#fff" />
               <Text className="text-white font-text-light text-base ml-3">
                 My List
               </Text>
             </Button>
 
-            <Button classes={"flex-row flex-1  justify-center  items-center py-3 mr-2  rounded-md bg-primaryBtn hover:bg-red-500 transition-colors duration-75 "} >
+            <Button handlePress={handleReviews} classes={"flex-row flex-1  justify-center  items-center py-3 mr-2  rounded-md bg-primaryBtn hover:bg-red-500 transition-colors duration-75 "} >
               <ChatBubbleBottomCenterTextIcon color="#fff" scale={20} />
               <Text className="text-white font-text-light text-base ml-3">
                 Reviews
@@ -235,6 +257,25 @@ const Movie = () => {
           />
         </View>
       </Animated.ScrollView>
+
+      <BottomSheet  
+        snapPoints={snapPoints}
+        index={sheetIndex}
+        onChange={(index) => setSheetIndex(index)}
+        enablePanDownToClose={true}
+        backgroundStyle={{ backgroundColor: "#272727" }}
+        handleIndicatorStyle={{ backgroundColor: "#DF0912" }}>
+           <Text className="text-center text-white font-title mb-4">Reviews</Text>
+         <BottomSheetScrollView className="h-full">
+           <View className="px-2">
+               {
+                  reviews.map((review)=>{
+                     return <Reviews key={review?.id} review={review}/>
+                  })
+               }
+           </View>
+        </BottomSheetScrollView>
+      </BottomSheet>
     </SafeAreaView>
   );
 };

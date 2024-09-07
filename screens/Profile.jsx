@@ -4,6 +4,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { StatusBar } from "expo-status-bar";
 
 import BottomSheet, { BottomSheetTextInput } from "@gorhom/bottom-sheet";
+
 // components
 import Header from "../components/Header";
 import Button from "../components/Button";
@@ -30,6 +31,7 @@ import { router } from 'expo-router'
 
 const Profile = () => {
   const {user,updateUser} = useGlobalContext()
+
   
   const [profiles,setProfiles]= useState([])
   const [Images,setImages]= useState([])
@@ -42,6 +44,7 @@ const Profile = () => {
 
   const bottomSheetRef = useRef(null);
   const snapPoints = useMemo(() => ["50%","70%"], []);
+
 
 
   useEffect(() => {
@@ -64,7 +67,8 @@ const Profile = () => {
     FetchData()
    
   }, [user?.$id,profiles]);
- 
+
+
 
   // activating bottomsheet
   const handlePresentPress = useCallback(async() => {
@@ -75,17 +79,18 @@ const Profile = () => {
   }, []);
   
   // choosing profile
-  const handlePress=(image_url,name,profileId,image)=>{
-    const profile = {
-      image_url,
-      name,
-      profileId,
-      profile_image:image
-    }
+  const handlePress=(Profile)=>{
+     const {defaultImages,name,$id,image} = Profile
 
-     updateUser(profile)
+      const profile = {
+        name,
+        profileId:$id,
+        profile_image: image || defaultImages?.image_url
+      }
 
-    router.push('/home')
+      updateUser(profile)
+
+      router.push('/home')
   }
 
   // creating profile
@@ -127,7 +132,7 @@ const Profile = () => {
             
             {
               profiles.map((profile)=>{
-                 return <Pressable onPress={()=>handlePress(profile.defaultImages?.image_url,profile?.name,profile?.$id,profile?.image)} className="w-28" key={profile.$id}>
+                 return <Pressable onPress={()=>handlePress(profile)} className="w-28" key={profile.$id}>
                  <Image
                    source={{uri:profile.defaultImages?.image_url}}
                    resizeMode="contain"
